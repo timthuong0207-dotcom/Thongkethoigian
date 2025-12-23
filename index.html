@@ -2,10 +2,10 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Tính thời gian chênh lệch của 1 sự kiện tới hiện tại</title>
+  <title>Tính khoảng thời gian từ sự kiện</title>
   <style>
     body {
-      font-family: 'Comic Sans MS', cursive, sans-serif;
+      font-family: 'Courier New', monospace; /* chữ kiểu số */
       background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
       text-align: center;
       padding: 50px;
@@ -47,8 +47,8 @@
 </head>
 <body>
   <h2>Khoảng thời gian từ sự kiện tới hiện tại</h2>
-  <label>Ngày giờ sự kiện:</label>
-  <input type="datetime-local" id="eventTime">
+  <label>Ngày sự kiện:</label>
+  <input type="date" id="eventDate">
   <p id="result"></p>
 
   <script>
@@ -60,34 +60,40 @@
     }
 
     function calculateDuration() {
-      let eventInput = document.getElementById("eventTime").value;
+      let eventInput = document.getElementById("eventDate").value;
       if (!eventInput) {
-        document.getElementById("result").innerText = "Vui lòng nhập thời gian sự kiện!";
+        document.getElementById("result").innerText = "Vui lòng nhập ngày sự kiện!";
         return;
       }
 
       let eventDate = new Date(eventInput);
       let now = new Date();
 
-      // chênh lệch và quy đổi về giây
-      let totalSeconds = Math.floor((now - eventDate) / 1000);
+      // Tính chênh lệch theo năm, tháng, ngày
+      let years = now.getFullYear() - eventDate.getFullYear();
+      let months = now.getMonth() - eventDate.getMonth();
+      let days = now.getDate() - eventDate.getDate();
 
-      let years = 0, months = 0, weeks = 0, days = 0, hours = 0, minutes = 0, seconds = totalSeconds;
+      // Điều chỉnh nếu ngày âm
+      if (days < 0) {
+        months--;
+        let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
 
-      while (seconds >= 60) { seconds -= 60; minutes++; }
-      while (minutes >= 60) { minutes -= 60; hours++; }
-      while (hours >= 24) { hours -= 24; days++; }
-      while (days >= 7) { days -= 7; weeks++; }
-      while (weeks >= 4) { weeks -= 4; months++; }
-      while (months >= 12) { months -= 12; years++; }
+      // Điều chỉnh nếu tháng âm
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
 
       document.getElementById("result").innerText =
-        seconds + " giây • " + minutes + " phút • " + hours + " giờ • " +
-        days + " ngày • " + weeks + " tuần • " + months + " tháng • " + years + " năm";
+        days + " ngày • " + months + " tháng • " + years + " năm";
     }
 
-    document.getElementById("eventTime").addEventListener("change", startTimer);
+    document.getElementById("eventDate").addEventListener("change", startTimer);
   </script>
 </body>
 </html>
+
 

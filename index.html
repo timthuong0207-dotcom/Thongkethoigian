@@ -49,70 +49,47 @@
   </style>
 </head>
 <body>
-  <h2>Quy đổi thời gian</h2>
-  <input type="number" id="yearsInput" placeholder="Năm">
-  <input type="number" id="monthsInput" placeholder="Tháng">
-  <input type="number" id="daysInput" placeholder="Ngày">
-  <input type="number" id="hoursInput" placeholder="Giờ">
-  <input type="number" id="minutesInput" placeholder="Phút">
-  <input type="number" id="secondsInput" placeholder="Giây">
-  <br>
+  <h2>Quy đổi thời gian từ giây</h2>
+  <input type="number" id="secondsInput" placeholder="Nhập số giây">
   <button onclick="convertTime()">Quy đổi</button>
   <p id="result"></p>
 
   <script>
-    function convertTime() {
-      let years = parseInt(document.getElementById("yearsInput").value) || 0;
-      let months = parseInt(document.getElementById("monthsInput").value) || 0;
-      let days = parseInt(document.getElementById("daysInput").value) || 0;
-      let hours = parseInt(document.getElementById("hoursInput").value) || 0;
-      let minutes = parseInt(document.getElementById("minutesInput").value) || 0;
-      let seconds = parseInt(document.getElementById("secondsInput").value) || 0;
+    function convertTime(totalSeconds) {
+      let seconds = totalSeconds;
+      let minutes = 0, hours = 0, days = 0, weeks = 0, months = 0, years = 0;
 
-      // Quy đổi tất cả về giây (giả sử 1 tháng = 30 ngày, 1 năm = 365 ngày)
-      let totalSeconds = seconds 
-        + minutes * 60 
-        + hours * 3600 
-        + days * 86400 
-        + months * 2592000 
-        + years * 31536000;
-
-      // Reset lại các biến
-      years = months = weeks = days = hours = minutes = 0;
-      seconds = totalSeconds;
-
-      // Giây sang phút
+      // giây sang phút
       while (seconds >= 60) {
         seconds -= 60;
         minutes++;
       }
 
-      // Phút sang giờ
+      // phút sang giờ
       while (minutes >= 60) {
         minutes -= 60;
         hours++;
       }
 
-      // Giờ sang ngày
+      // giờ sang ngày
       while (hours >= 24) {
         hours -= 24;
         days++;
       }
 
-      // Ngày sang tuần
-      let weeks = 0;
+      // ngày sang tuần
       while (days >= 7) {
         days -= 7;
         weeks++;
       }
 
-      // Tuần sang tháng (giả sử 1 tháng = 4 tuần)
+      // tuần sang tháng (giả sử 1 tháng = 4 tuần)
       while (weeks >= 4) {
         weeks -= 4;
         months++;
       }
 
-      // Tháng sang năm
+      // tháng sang năm
       while (months >= 12) {
         months -= 12;
         years++;
@@ -125,4 +102,3 @@
   </script>
 </body>
 </html>
-

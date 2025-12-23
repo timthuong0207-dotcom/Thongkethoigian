@@ -2,41 +2,38 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Quy đổi thời gian</title>
+  <title>Tính khoảng thời gian từ sự kiện</title>
   <style>
     body {
-      font-family: 'Arial', sans-serif;
-      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
       text-align: center;
       padding: 50px;
-      color: #333;
+      color: #4a0033;
     }
     h2 {
-      font-size: 28px;
+      font-size: 32px;
       margin-bottom: 20px;
       animation: fadeIn 2s ease-in-out;
+      color: #b30059;
+      text-shadow: 2px 2px #ffe6f2;
     }
-    input, button {
+    input {
       padding: 10px 15px;
       font-size: 16px;
       margin: 10px;
-      border-radius: 5px;
-      border: none;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    button:hover {
-      transform: scale(1.1);
+      border-radius: 8px;
+      border: 2px solid #ff66b2;
+      background-color: #fff0f6;
+      color: #660033;
     }
     #result {
-      margin-top: 20px;
-      font-size: 20px;
+      margin-top: 30px;
+      font-size: 22px;
       font-weight: bold;
       animation: fadeInUp 1s ease-in-out;
+      color: #99004d;
+      text-shadow: 1px 1px #ffe6f2;
     }
     @keyframes fadeIn {
       from {opacity: 0;}
@@ -49,56 +46,47 @@
   </style>
 </head>
 <body>
-  <h2>Quy đổi thời gian từ giây</h2>
-  <input type="number" id="secondsInput" placeholder="Nhập số giây">
-  <button onclick="convertTime()">Quy đổi</button>
+  <h2>Khoảng thời gian từ sự kiện tới hiện tại</h2>
+  <label>Ngày giờ sự kiện:</label>
+  <input type="datetime-local" id="eventTime">
   <p id="result"></p>
 
   <script>
-    function convertTime(totalSeconds) {
-      let seconds = totalSeconds;
-      let minutes = 0, hours = 0, days = 0, weeks = 0, months = 0, years = 0;
+    let timer;
 
-      // giây sang phút
-      while (seconds >= 60) {
-        seconds -= 60;
-        minutes++;
+    function startTimer() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(calculateDuration, 1000);
+    }
+
+    function calculateDuration() {
+      let eventInput = document.getElementById("eventTime").value;
+      if (!eventInput) {
+        document.getElementById("result").innerText = "Vui lòng nhập thời gian sự kiện!";
+        return;
       }
 
-      // phút sang giờ
-      while (minutes >= 60) {
-        minutes -= 60;
-        hours++;
-      }
+      let eventDate = new Date(eventInput);
+      let now = new Date();
 
-      // giờ sang ngày
-      while (hours >= 24) {
-        hours -= 24;
-        days++;
-      }
+      // chênh lệch và quy đổi về giây
+      let totalSeconds = Math.floor((now - eventDate) / 1000);
 
-      // ngày sang tuần
-      while (days >= 7) {
-        days -= 7;
-        weeks++;
-      }
+      let years = 0, months = 0, weeks = 0, days = 0, hours = 0, minutes = 0, seconds = totalSeconds;
 
-      // tuần sang tháng (giả sử 1 tháng = 4 tuần)
-      while (weeks >= 4) {
-        weeks -= 4;
-        months++;
-      }
-
-      // tháng sang năm
-      while (months >= 12) {
-        months -= 12;
-        years++;
-      }
+      while (seconds >= 60) { seconds -= 60; minutes++; }
+      while (minutes >= 60) { minutes -= 60; hours++; }
+      while (hours >= 24) { hours -= 24; days++; }
+      while (days >= 7) { days -= 7; weeks++; }
+      while (weeks >= 4) { weeks -= 4; months++; }
+      while (months >= 12) { months -= 12; years++; }
 
       document.getElementById("result").innerText =
-        years + " năm " + months + " tháng " + weeks + " tuần " +
-        days + " ngày " + hours + " giờ " + minutes + " phút " + seconds + " giây";
+        seconds + " giây • " + minutes + " phút • " + hours + " giờ • " +
+        days + " ngày • " + weeks + " tuần • " + months + " tháng • " + years + " năm";
     }
+
+    document.getElementById("eventTime").addEventListener("change", startTimer);
   </script>
 </body>
 </html>

@@ -1,116 +1,104 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Thống kê thời gian sự kiện</title>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-            font-family: 'Dancing Script', cursive;
-            color: #fff;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        input,
-        button {
-            padding: 10px;
-            margin: 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2em;
-        }
-
-        button {
-            background: #ff5f7e;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #ff2e63;
-        }
-
-        #result {
-            margin-top: 30px;
-            font-size: 1.8em;
-        }
-
-        .number {
-            font-weight: bold;
-            font-size: 2em;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Quy đổi thời gian</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #74ebd5 0%, #ACB6E5 100%);
+      text-align: center;
+      padding: 50px;
+      color: #333;
+    }
+    h2 {
+      font-size: 28px;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease-in-out;
+    }
+    input, button {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.1);
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: bold;
+      animation: fadeInUp 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    @keyframes fadeInUp {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
 </head>
-
 <body>
-    <h1>Thống kê thời gian từ sự kiện</h1>
-    <label>Nhập ngày sự kiện:</label>
-    <input type="date" id="eventDate">
-    <button onclick="startCounter()">Bắt đầu</button>
+  <h2>Quy đổi thời gian từ giây</h2>
+  <input type="number" id="secondsInput" placeholder="Nhập số giây">
+  <button onclick="convertTime()">Quy đổi</button>
+  <p id="result"></p>
 
-    <div id="result"></div>
+  <script>
+    function convertTime(totalSeconds) {
+      let seconds = totalSeconds;
+      let minutes = 0, hours = 0, days = 0, weeks = 0, months = 0, years = 0;
 
-    <script>
-        let timer;
+      // giây sang phút
+      while (seconds >= 60) {
+        seconds -= 60;
+        minutes++;
+      }
 
-        function startCounter() {
-            const input = document.getElementById("eventDate").value;
-            if (!input) { alert("Vui lòng nhập ngày!"); return; }
-            const eventDate = new Date(input);
+      // phút sang giờ
+      while (minutes >= 60) {
+        minutes -= 60;
+        hours++;
+      }
 
-            clearInterval(timer);
+      // giờ sang ngày
+      while (hours >= 24) {
+        hours -= 24;
+        days++;
+      }
 
-            timer = setInterval(() => {
-                const now = new Date();
+      // ngày sang tuần
+      while (days >= 7) {
+        days -= 7;
+        weeks++;
+      }
 
-                // Tính chênh lệch chính xác
-                let years = now.getFullYear() - eventDate.getFullYear();
-                let months = now.getMonth() - eventDate.getMonth();
-                let days = now.getDate() - eventDate.getDate();
-                let hours = now.getHours() - eventDate.getHours();
-                let minutes = now.getMinutes() - eventDate.getMinutes();
-                let seconds = now.getSeconds() - eventDate.getSeconds();
+      // tuần sang tháng (giả sử 1 tháng = 4 tuần)
+      while (weeks >= 4) {
+        weeks -= 4;
+        months++;
+      }
 
-                // Điều chỉnh nếu số âm
-                if (seconds < 0) { seconds += 60; minutes--; }
-                if (minutes < 0) { minutes += 60; hours--; }
-                if (hours < 0) { hours += 24; days--; }
-                if (days < 0) {
-                    // lấy số ngày của tháng trước
-                    let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-                    days += prevMonth; months--;
-                }
-                if (months < 0) { months += 12; years--; }
+      // tháng sang năm
+      while (months >= 12) {
+        months -= 12;
+        years++;
+      }
 
-                // Tuần = ngày / 7 (tương đối)
-                let totalDays = Math.floor((now - eventDate) / (1000 * 60 * 60 * 24));
-                let weeks = Math.floor(totalDays / 7);
-
-                document.getElementById("result").innerHTML = `
-          Thời gian từ lúc xảy ra sự kiện tới hiện tại là:<br>
-          <span class="number">${seconds}</span> giây 
-          <span class="number">${minutes}</span> phút 
-          <span class="number">${hours}</span> tiếng 
-          <span class="number">${days}</span> ngày 
-          <span class="number">${weeks}</span> tuần 
-          <span class="number">${months}</span> tháng 
-          <span class="number">${years}</span> năm
-        `;
-            }, 1000);
-        }
-    </script>
+      document.getElementById("result").innerText =
+        years + " năm " + months + " tháng " + weeks + " tuần " +
+        days + " ngày " + hours + " giờ " + minutes + " phút " + seconds + " giây";
+    }
+  </script>
 </body>
-
 </html>

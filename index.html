@@ -1,35 +1,163 @@
-/* Ánh sáng chạy ngang phía trên (trái → phải) */
-body::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 200%;
-  height: 50%;
-  background: linear-gradient(120deg, rgba(255,255,255,0.15), rgba(255,255,255,0));
-  animation: shineRight 6s linear infinite;
-  pointer-events: none;
-}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tính khoảng thời gian từ sự kiện</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(to bottom, #cceeff, #66b2ff, #004080);
+      text-align: center;
+      padding: 50px;
+      color: #00264d;
+      position: relative;
+      overflow: hidden;
+    }
 
-/* Ánh sáng chạy ngang phía dưới (phải → trái) */
-body::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  right: -100%;
-  width: 200%;
-  height: 50%;
-  background: linear-gradient(240deg, rgba(255,255,255,0.15), rgba(255,255,255,0));
-  animation: shineLeft 6s linear infinite;
-  pointer-events: none;
-}
+    /* Ánh sáng phía trên (trái → phải) */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0));
+      animation: shineRight 8s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-@keyframes shineRight {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(100%); }
-}
+    /* Ánh sáng phía dưới (phải → trái) */
+    body::after {
+      content: "";
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(270deg, rgba(255,255,255,0.15), rgba(255,255,255,0));
+      animation: shineLeft 8s linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-@keyframes shineLeft {
-  from { transform: translateX(100%); }
-  to { transform: translateX(-100%); }
-}
+    @keyframes shineRight {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    @keyframes shineLeft {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease-in-out, colorShift 5s infinite alternate;
+      color: #001f3f;
+      text-shadow: 2px 2px #e6f2ff;
+      position: relative;
+      z-index: 1;
+    }
+
+    input {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 8px;
+      border: 2px solid #3399ff;
+      background-color: #f0f8ff;
+      color: #003366;
+      position: relative;
+      z-index: 1;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 22px;
+      font-weight: bold;
+      animation: fadeInUp 1s ease-in-out, colorShift 5s infinite alternate;
+      color: #001f4d;
+      text-shadow: 1px 1px #e6f2ff;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+
+    @keyframes fadeInUp {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    @keyframes colorShift {
+      0% { color: #001f4d; }
+      50% { color: #004080; }
+      100% { color: #3399ff; }
+    }
+  </style>
+</head>
+<body>
+  <h2>Khoảng thời gian từ sự kiện tới hiện tại</h2>
+  <label>Ngày sự kiện:</label>
+  <input type="date" id="eventDate">
+  <p id="result"></p>
+
+  <script>
+    let timer;
+
+    function startTimer() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(calculateDuration, 1000);
+    }
+
+    function calculateDuration() {
+      let eventInput = document.getElementById("eventDate").value;
+      if (!eventInput) {
+        document.getElementById("result").innerText = "Vui lòng nhập ngày sự kiện!";
+        return;
+      }
+
+      // Lưu ngày sự kiện vào localStorage
+      localStorage.setItem("eventDate", eventInput);
+
+      let eventDate = new Date(eventInput);
+      let now = new Date();
+
+      let years = now.getFullYear() - eventDate.getFullYear();
+      let months = now.getMonth() - eventDate.getMonth();
+      let days = now.getDate() - eventDate.getDate();
+
+      if (days < 0) {
+        months--;
+        let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
+
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
+
+      document.getElementById("result").innerText =
+        days + " ngày • " + months + " tháng • " + years + " năm";
+    }
+
+    // Khi web load lại, tự động lấy ngày đã lưu
+    window.onload = function() {
+      let savedDate = localStorage.getItem("eventDate");
+      if (savedDate) {
+        document.getElementById("eventDate").value = savedDate;
+        startTimer();
+      }
+    };
+
+    document.getElementById("eventDate").addEventListener("change", startTimer);
+  </script>
+</body>
+</html>

@@ -5,8 +5,8 @@
   <title>Tính khoảng thời gian từ sự kiện</title>
   <style>
     body {
-      font-family: 'Courier New', monospace; /* chữ kiểu số */
-      background: linear-gradient(to bottom, #cceeff, #66b2ff, #004080); /* xanh nhạt -> xanh đậm */
+      font-family: 'Courier New', monospace;
+      background: linear-gradient(to bottom, #d0eaff, #80bfff, #004080); /* nền xanh mượt */
       text-align: center;
       padding: 50px;
       color: #00264d;
@@ -69,19 +69,16 @@
       let eventDate = new Date(eventInput);
       let now = new Date();
 
-      // Tính chênh lệch theo năm, tháng, ngày
       let years = now.getFullYear() - eventDate.getFullYear();
       let months = now.getMonth() - eventDate.getMonth();
       let days = now.getDate() - eventDate.getDate();
 
-      // Điều chỉnh nếu ngày âm
       if (days < 0) {
         months--;
         let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
         days += prevMonth.getDate();
       }
 
-      // Điều chỉnh nếu tháng âm
       if (months < 0) {
         years--;
         months += 12;

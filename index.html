@@ -11,32 +11,30 @@
       padding: 50px;
       color: #00264d;
       position: relative;
-      overflow: hidden;
+      overflow: hidden; /* chặn hiệu ứng tràn */
     }
 
     /* Ánh sáng phía trên (trái → phải) */
-    body::before {
-      content: "";
-      position: fixed;
+    .shine-top {
+      position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 50%;
-      background: linear-gradient(90deg, rgba(255,255,255,0.15), rgba(255,255,255,0));
+      background: linear-gradient(90deg, rgba(255,255,255,0.12), rgba(255,255,255,0));
       animation: shineRight 8s linear infinite;
       pointer-events: none;
       z-index: 0;
     }
 
     /* Ánh sáng phía dưới (phải → trái) */
-    body::after {
-      content: "";
-      position: fixed;
+    .shine-bottom {
+      position: absolute;
       bottom: 0;
-      right: 0;
+      left: 0;
       width: 100%;
       height: 50%;
-      background: linear-gradient(270deg, rgba(255,255,255,0.15), rgba(255,255,255,0));
+      background: linear-gradient(270deg, rgba(255,255,255,0.12), rgba(255,255,255,0));
       animation: shineLeft 8s linear infinite;
       pointer-events: none;
       z-index: 0;
@@ -103,6 +101,10 @@
   </style>
 </head>
 <body>
+  <!-- Lớp ánh sáng -->
+  <div class="shine-top"></div>
+  <div class="shine-bottom"></div>
+
   <h2>Khoảng thời gian từ sự kiện tới hiện tại</h2>
   <label>Ngày sự kiện:</label>
   <input type="date" id="eventDate">

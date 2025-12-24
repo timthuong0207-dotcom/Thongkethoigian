@@ -1,116 +1,98 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Thống kê thời gian sự kiện</title>
-    <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #9f9aff, #c4e5fa);
-            font-family: 'Dancing Script', cursive;
-            color: #fff;
-            text-align: center;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        input,
-        button {
-            padding: 10px;
-            margin: 10px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2em;
-        }
-
-        button {
-            background: #ff5f7e;
-            color: #fff;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background: #ff2e63;
-        }
-
-        #result {
-            margin-top: 30px;
-            font-size: 1.8em;
-        }
-
-        .number {
-            font-weight: bold;
-            font-size: 2em;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Tính khoảng thời gian từ sự kiện</title>
+  <style>
+    body {
+      font-family: 'Courier New', monospace; /* chữ kiểu số */
+      background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+      text-align: center;
+      padding: 50px;
+      color: #4a0033;
+    }
+    h2 {
+      font-size: 32px;
+      margin-bottom: 20px;
+      animation: fadeIn 2s ease-in-out;
+      color: #b30059;
+      text-shadow: 2px 2px #ffe6f2;
+    }
+    input {
+      padding: 10px 15px;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 8px;
+      border: 2px solid #ff66b2;
+      background-color: #fff0f6;
+      color: #660033;
+    }
+    #result {
+      margin-top: 30px;
+      font-size: 22px;
+      font-weight: bold;
+      animation: fadeInUp 1s ease-in-out;
+      color: #99004d;
+      text-shadow: 1px 1px #ffe6f2;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+    @keyframes fadeInUp {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+  </style>
 </head>
-
 <body>
-    <h1>Thống kê thời gian từ sự kiện</h1>
-    <label>Nhập ngày sự kiện:</label>
-    <input type="date" id="eventDate">
-    <button onclick="startCounter()">Bắt đầu</button>
+  <h2>Khoảng thời gian từ sự kiện tới hiện tại</h2>
+  <label>Ngày sự kiện:</label>
+  <input type="date" id="eventDate">
+  <p id="result"></p>
 
-    <div id="result"></div>
+  <script>
+    let timer;
 
-    <script>
-        let timer;
+    function startTimer() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(calculateDuration, 1000);
+    }
 
-        function startCounter() {
-            const input = document.getElementById("eventDate").value;
-            if (!input) { alert("Vui lòng nhập ngày!"); return; }
-            const eventDate = new Date(input);
+    function calculateDuration() {
+      let eventInput = document.getElementById("eventDate").value;
+      if (!eventInput) {
+        document.getElementById("result").innerText = "Vui lòng nhập ngày sự kiện!";
+        return;
+      }
 
-            clearInterval(timer);
+      let eventDate = new Date(eventInput);
+      let now = new Date();
 
-            timer = setInterval(() => {
-                const now = new Date();
+      // Tính chênh lệch theo năm, tháng, ngày
+      let years = now.getFullYear() - eventDate.getFullYear();
+      let months = now.getMonth() - eventDate.getMonth();
+      let days = now.getDate() - eventDate.getDate();
 
-                // Tính chênh lệch chính xác
-                let years = now.getFullYear() - eventDate.getFullYear();
-                let months = now.getMonth() - eventDate.getMonth();
-                let days = now.getDate() - eventDate.getDate();
-                let hours = now.getHours() - eventDate.getHours();
-                let minutes = now.getMinutes() - eventDate.getMinutes();
-                let seconds = now.getSeconds() - eventDate.getSeconds();
+      // Điều chỉnh nếu ngày âm
+      if (days < 0) {
+        months--;
+        let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        days += prevMonth.getDate();
+      }
 
-                // Điều chỉnh nếu số âm
-                if (seconds < 0) { seconds += 60; minutes--; }
-                if (minutes < 0) { minutes += 60; hours--; }
-                if (hours < 0) { hours += 24; days--; }
-                if (days < 0) {
-                    // lấy số ngày của tháng trước
-                    let prevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-                    days += prevMonth; months--;
-                }
-                if (months < 0) { months += 12; years--; }
+      // Điều chỉnh nếu tháng âm
+      if (months < 0) {
+        years--;
+        months += 12;
+      }
 
-                // Tuần = ngày / 7 (tương đối)
-                let totalDays = Math.floor((now - eventDate) / (1000 * 60 * 60 * 24));
-                let weeks = Math.floor(totalDays / 7);
+      document.getElementById("result").innerText =
+        days + " ngày • " + months + " tháng • " + years + " năm";
+    }
 
-                document.getElementById("result").innerHTML = `
-          Thời gian từ lúc xảy ra sự kiện tới hiện tại là:<br>
-          <span class="number">${seconds}</span> giây 
-          <span class="number">${minutes}</span> phút 
-          <span class="number">${hours}</span> tiếng 
-          <span class="number">${days}</span> ngày 
-          <span class="number">${weeks}</span> tuần 
-          <span class="number">${months}</span> tháng 
-          <span class="number">${years}</span> năm
-        `;
-            }, 1000);
-        }
-    </script>
+    document.getElementById("eventDate").addEventListener("change", startTimer);
+  </script>
 </body>
-
 </html>
+

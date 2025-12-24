@@ -11,7 +11,7 @@
       padding: 50px;
       color: #00264d;
       position: relative;
-      overflow: hidden; /* chặn hiệu ứng tràn */
+      overflow: hidden;
     }
 
     /* Ánh sáng phía trên (trái → phải) */
@@ -98,6 +98,22 @@
       50% { color: #004080; }
       100% { color: #3399ff; }
     }
+
+    /* Hiệu ứng tuyết rơi */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 18px;
+      animation: fall linear infinite;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0.8; }
+    }
   </style>
 </head>
 <body>
@@ -110,6 +126,7 @@
   <input type="date" id="eventDate">
   <p id="result"></p>
 
+  <!-- Tạo tuyết rơi -->
   <script>
     let timer;
 
@@ -156,6 +173,17 @@
       if (savedDate) {
         document.getElementById("eventDate").value = savedDate;
         startTimer();
+      }
+
+      // Tạo hiệu ứng tuyết rơi
+      for (let i = 0; i < 30; i++) {
+        let snowflake = document.createElement("div");
+        snowflake.className = "snowflake";
+        snowflake.innerHTML = "❄";
+        snowflake.style.left = Math.random() * window.innerWidth + "px";
+        snowflake.style.animationDuration = (5 + Math.random() * 5) + "s";
+        snowflake.style.fontSize = (12 + Math.random() * 12) + "px";
+        document.body.appendChild(snowflake);
       }
     };
 

@@ -6,18 +6,39 @@
   <style>
     body {
       font-family: 'Courier New', monospace;
-      background: linear-gradient(to bottom, #d0eaff, #80bfff, #004080); /* nền xanh mượt */
+      background: linear-gradient(to bottom, #cceeff, #66b2ff, #004080);
       text-align: center;
       padding: 50px;
       color: #00264d;
+      position: relative;
+      overflow: hidden;
     }
+
+    /* Hiệu ứng ánh sáng chạy ngang */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -50%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(120deg, rgba(255,255,255,0.2), rgba(255,255,255,0));
+      animation: shine 6s linear infinite;
+    }
+
+    @keyframes shine {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(100%); }
+    }
+
     h2 {
       font-size: 32px;
       margin-bottom: 20px;
-      animation: fadeIn 2s ease-in-out;
+      animation: fadeIn 2s ease-in-out, colorShift 5s infinite alternate;
       color: #001f3f;
       text-shadow: 2px 2px #e6f2ff;
     }
+
     input {
       padding: 10px 15px;
       font-size: 16px;
@@ -27,21 +48,31 @@
       background-color: #f0f8ff;
       color: #003366;
     }
+
     #result {
       margin-top: 30px;
       font-size: 22px;
       font-weight: bold;
-      animation: fadeInUp 1s ease-in-out;
+      animation: fadeInUp 1s ease-in-out, colorShift 5s infinite alternate;
       color: #001f4d;
       text-shadow: 1px 1px #e6f2ff;
     }
+
     @keyframes fadeIn {
       from {opacity: 0;}
       to {opacity: 1;}
     }
+
     @keyframes fadeInUp {
       from {opacity: 0; transform: translateY(20px);}
       to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Hiệu ứng đổi màu chữ */
+    @keyframes colorShift {
+      0% { color: #001f4d; }
+      50% { color: #004080; }
+      100% { color: #3399ff; }
     }
   </style>
 </head>
